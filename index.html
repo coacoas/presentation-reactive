@@ -43,7 +43,8 @@
             <div class="slides">
                 <section>
                     <h1>Reactive Programming</h1>
-                    <h3>(Primarily RxJava and Reactive Streams)</h3>
+                    <h3>RxJava and Reactive Streams</h3>
+                    <caption><small><a href="http://coacoas.github.io/presentations-rxjava">http://coacoas.github.io/presentations-rxjava</a></small></caption>
                 </section>
 
                 <section>
@@ -136,64 +137,52 @@
 
                 <section>
 
-                    <section>
+                    <!-- section>
                         <h2>Observer[T]</h2>
                         <p>onNext(T item)</p>
                         <p>onError(Throwable exc)</p>
                         <p>onComplete()</p>
-                    </section>
+                    </section -->
 
                     <section>
-                        <h2>Observable[T]</h2>
+                        <h1>Observable[T]</h1>
                         <p>Generates data to be observed</p>
                     </section>
 
                     <section>
                         <h3>Creating Observables</h3>
-                        <table class="list">
-                            <tr class="fragment">
-                                <td>Observable.just(1)</td>
-                            </tr>
-                            <tr class="fragment">
-                                <td>Observable.just(1, 2, 3)</td>
-                            </tr>
-                            <tr class="fragment">
-                                <td>Observable.from(T[])</td>
-                            </tr>
-                            <tr class="fragment">
-                                <td>Observable.from(Iterable[T])</td>
-                            </tr>
-                            <tr class="fragment">
-                                <td>Observable.from(Future[T])</td>
-                            </tr>
-
-                        </table>
+                        <ul>
+                            <li class="no-bullet fragment">Observable.just(1)</li>
+                            <li class="no-bullet fragment">Observable.just(1,2,3)</li>
+                            <li class="no-bullet fragment">Observable.from(T[])</li>
+                            <li class="no-bullet fragment">Observable.from(Iterable[T])</li>
+                            <li class="no-bullet fragment">Observable.from(Future[T])</li>
+                        </ul>
                     </section>
                     <section>
                         <h3>Special Observables</h3>
-                        <table class="list">
-                            <tr>
-                                <td>Observable.empty()</td>
-                            </tr>
-                            <tr>
-                                <td>Observable.never()</td>
-                            </tr>
-                            <tr>
-                                <td>Observable.error(Exception)</td>
-                            </tr>
-                            <tr>
-                                <td>Observable.interval(Long interval, TimeUnit unit)</td>
-                            </tr>
-                            <tr>
-                                <td>Observable.range(start, end)</td>
-                            </tr>
-                        </table>
+                        <ul>
+                            <li class="no-bullet">Observable.empty()</li>
+                            <li class="no-bullet">Observable.never()</li>
+                            <li class="no-bullet">Observable.error(Exception)</li>
+                            <li class="no-bullet">Observable.interval(Long interval, TimeUnit unit)</li>
+                            <li class="no-bullet">Observable.range(start, end)</li>
+                        </ul>
                     </section>
                     <section>
                         <h2>Custom Observables</h2>
-                        <pre><code lang="java">
+                        <p>Remember those three properties of iteration?</p>
+                        <ul>
+                            <li class="fragment  ">Emit items</li>
+                            <li class="fragment  ">Indicate errors</li>
+                            <li class="fragment  ">Completion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Custom Observables</h2>
+                        <pre class="fragment  "><code lang="java">
 Observable.create(subscriber -> {
-    try { 
+    try {
         subscriber.onNext(1);
         subscriber.onNext(2);
         subscriber.onNext(3);
@@ -208,11 +197,11 @@ Observable.create(subscriber -> {
 
                 <section>
                     <section>
-                        <h2>Mapping/Filtering Observables</h2>
-                        <h4 class="fragment">Just like everything else</h4>
+                        <h1>Transforming Observables</h1>
+                        <h4 class="fragment">Just like streams</h4>
                     </section>
                     <section>
-                        <h2>Rx's Contribution</h2>
+                        <h2>Rx's Greatest Contribution</h2>
                         <div class="fragment">
                             <img src="images/marble-legend.png" alt="Marble Diagrams">
                             <h4>Marble Diagrams!</h4>
@@ -287,7 +276,7 @@ Observable.create(subscriber -> {
 
                 <section>
                     <section>
-                        <h1>"Callbacks"</h1>
+                        <h1>Getting to the Data</h1>
                     </section>
 
                     <section>
@@ -368,24 +357,13 @@ Observable.create(subscriber -> {
                         </table>
                     </section>
 
-                    <section>
-                        <h2>But wait! There's more!</h2>
-                        <div class="side-by-side">
-                            <div><img class="thumbnail" src="images/BillyMays.jpg" alt="Billy Mays"/></div>
-                            <div>
-                                <ul>
-                                    <li>doOnSubscribe</li>
-                                    <li>doOnUnsubscribe</li>
-                                    <li>doOnTerminate/finallyDo</li>
-                                    <li>doOnEach</li>
-                                    <li>doOnNext</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </section>
                 </section>
 
                 <section>
+                    <section>
+                        <h1>Threading</h1>
+                    </section>
+
                     <section>
                         <h2>Threading</h2>
                         <ul>
@@ -418,16 +396,189 @@ Observable.create(subscriber -> {
 
                 <section>
                     <section>
+                        <h1>Hot / Cold</h1>
+                    </section>
+                    <section>
+                        <h2>Cold Observables</h2>
+                        <ul>
+                            <li>Accept any number of subscribers</li>
+                            <li>Emits the same values to all subscribers</li>
+                        </ul>
+                        <pre><code lang="java">
+                            Observable&lt;Long> longs = Observable.just(1,2,3);
+                            longs.subscribe(System.out::println);
+                            // 1
+                            // 2
+                            // 3
+                            longs.subscribe(System.out::println);
+                            // 1
+                            // 2
+                            // 3
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>Hot Observables</h2>
+                        <ul>
+                            <li>Emit values all the time</li>
+                            <li>Each subscriber only gets the values emitted after subscription</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Hot Observables</h2>
+                        <h3>Examples</h3>
+                        <ul>
+                            <li>Keyboard input</li>
+                            <li>Mouse movement</li>
+                            <li>Button clicks</li>
+                            <li>Pub/Sub events</li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h1>Backpressure</h1>
+                    </section>
+
+                    <section>
+                        <h2>Backpressure</h2>
+                        <p>This is all asynchronous -- what happens if producers and consumers do not process
+                        elements at the same rate?</p>
+                    </section>
+
+                    <section>
+                        <h3>Slow Producer/Fast Consumer</h3>
+                        <ul>
+                            <li>Doesn't really matter.</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>Fast Producer/Slow Consumer</h3>
+                        <ul>
+                            <li>Now we have a problem</li>
+                            <li class="fragment">Observables are push-based</li>
+                            <li class="fragment">Data "stacks up" while waiting for processing.</li>
+                            <li class="fragment">Eventually fills up memory</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Backpressure Solutions</h2>
+                        <h3>Reactive Pull</h3>
+<pre><code>
+    Observable.create(observer -> {
+        observer.setProducer(requested -> {
+            System.out.println("Requested " + requested + " more elements");
+            for (int i = 0; i < requested && !subscriber.isUnsubscribed(); i++) {
+                // Emit next items...
+            }
+        }
+    });
+</code></pre>
+                        <caption>Ideal for cold observables</caption>
+                    </section>
+
+                    <section>
+                        <h3>Throttling</h3>
+                        <div class="cell">
+                            <img src="images/sample.png" alt="Sample"/>
+                            <caption>sample()</caption>
+                        </div>
+                        <div class="cell">
+                            <img src="images/debounce.png" alt="Debounce"/>
+                            <caption>debounce()</caption>
+                        </div>
+                        <div class="cell">
+                            <img src="images/buffer.png" alt="Buffer"/>
+                            <caption>buffer()</caption>
+                        </div>
+                        <div class="cell">
+                            <img src="images/window.png" alt="Window"/>
+                            <caption>window()</caption>
+                        </div>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h1>Reactive Streams</h1>
+                        <caption><a href="http://www.reactive-streams.org/">http://www.reactive-streams.org/</a></caption>
+                    </section>
+                    <section>
+                        <h2>Reactive Streams</h2>
+                        <ul>
+                            <li>When consumer operates faster than producer, push works great (such as standard Rx)</li>
+                            <li>When producer operates faster than consumer, pull works best (don't overproduce)</li>
+                        </ul>
+                        <p>Now we get the best of both worlds</p>
+                    </section>
+                    <section>
+                        <h2>Reactive Streams</h2>
+                        <ul>
+                            <li>Governs the interface between producers and consumers</li>
+                            <li>Defines an API, a specification and a TCK</li>
+                            <li>Version 1.0.0-RC5 released on April 10, 2015</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>RxJavaReactiveStreams</h2>
+                        <ul>
+                            <li>Implementation of Reactive Streams for RxJava</li>
+                            <li>Allows for converting from Obervable to Publisher and vice versa</li>
+                            <li>Also allows for converting rx.Subscriber to org.reactivestreams.Subscriber</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Other Implementations</h2>
+                        <ul>
+                            <li>Akka Streams</li>
+                            <li>Ratpack</li>
+                            <li>Reactive Rabbit</li>
+                            <li>Reactor</li>
+                            <li>Slick</li>
+                            <li>Vert.x 3.0 (currently alpha)</li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
                         <h1>Specialized Libraries</h1>
                     </section>
                     <section>
-                        <h1>RxNetty</h1>
+                        <h1><a href="https://github.com/davidmoten/rxjava-jdbc">rxjava-jdbc</a></h1>
+                        <ul class="no-bullet">
+                            <li>Current version: 0.5.6</li>
+                        </ul>
+<pre><code lang="java">    Database db = new Database(connectionProvider);
+    Observable&lt;Integer> score = db
+        .select("select score from person where name &lt;> ? order by name")
+        .parameter("XAVIER")
+        .getAs(Integer.class)
+        .last();
+</code></pre>
                     </section>
                     <section>
-                        <h1>RxJavaFX</h1>
+                        <h1><a href="https://github.com/ReactiveX/RxNetty">RxNetty</a></h1>
+                        <ul class="no-bullet">
+                            <li>Non-blocking Network I/O</li>
+                        </ul>
                     </section>
                     <section>
-                        <h1>RxAndroid</h1>
+                        <h1><a href="https://github.com/ReactiveX/RxAndroid">RxAndroid</a></h1>
+                        <ul>
+                            <li>Android-specific bindings</li>
+                            <li>Most examples have it replacing AsyncTask</li>
+                            <li>Also has bindings for lifecycle and lifecycle</li>
+                            <li>Probably more. I don't actually write for Android... </li>
+                        </ul>
+<pre><code lang="java">    Observable.from("one", "two", "three", "four", "five")
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(/* an Observer */);
+</code></pre>
                     </section>
                 </section>
 
@@ -437,29 +588,45 @@ Observable.create(subscriber -> {
                     </section>
                     <section>
                         <h2>Testing</h2>
+                        <ul>
+                            <li>Testing async code is hard</li>
+                            <li>RxJava provides Observable::toBlocking()</li>
+                            <li>Works great for verifying data</li>
+                        </ul>
+<pre><code>
+    List&lt;Integer&gt; ints = Observable.just(1,2,3).
+        toList().toBlocking().single();
+</code></pre>
+                    </section>
+                    <section>
+                        <h2>TestSubscriber</h2>
+                        <p>Allows assertions to be executed against subscribers in unit tests</p>
+                    </section>
+                    <section>
+                        <h2>TestScheduler</h2>
+                        <p>Allows testing events by manipulating time</p>
                     </section>
                     <section>
                         <h2>Debugging</h2>
                     </section>
                     <section>
-                        <h2>Backpressure</h2>
+                        <h2>Debugging</h2>
+                        <ul>
+                            <li>Debugging async code is hard</li>
+                            <li>Imperative code has stack traces that make sense</li>
+                            <li>Stack traces from onError will only show a slice of execution</li>
+                            <li>Test individual steps</li>
+                            <li>Keep steps pure!</li>
+                        </ul>
                     </section>
-                </section>
-
-                <section>
                     <section>
-                        <h1>Reactive Streams</h1>
+                        <h2>RxJavaPlugins</h2>
+                        <ul>
+                            <li>Allow modification of default behavior</li>
+                            <li>See <a href="https://github.com/ReactiveX/RxJava/wiki/Plugins">https://github.com/ReactiveX/RxJava/wiki/Plugins</a></li>
+                        </ul>
                     </section>
                 </section>
-
-                <!--
-                <section>
-                    <section>
-                        <h2>Sneak peek:  Akka Streams!</h2>
-                        <caption class="fragment">Hey, I had to get some Scala in here...</caption>
-                    </section>
-                </section>
-                -->
 
                 <section>
                     <h1>Thank you</h1>
