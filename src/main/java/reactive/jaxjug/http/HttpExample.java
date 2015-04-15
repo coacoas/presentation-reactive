@@ -3,7 +3,10 @@ package reactive.jaxjug.http;
 import static io.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -16,12 +19,20 @@ import io.reactivex.netty.RxNetty;
 import io.reactivex.netty.protocol.http.server.HttpServer;
 import rx.Observable;
 
-public class JSON {
-	public static void main(String[] args) throws InterruptedException {
-		HttpServer server = RxNetty.createHttpServer(8282, (request, response) -> {
+public class HttpExample {
+	public static void main(String[] args) throws InterruptedException, URISyntaxException {
+		HttpServer server = RxNetty.createHttpServer(0, (request, response) -> {
 			try {
 				System.out.println("Server => received " + request.getPath());
 				switch (request.getPath()) {
+					case "/headers":
+						response.setStatus(OK);
+						response.writeString("Received request with headers :\n");
+						for (Map.Entry<String, String> header : response.getHeaders().entries()) {
+							response.writeString("\t" + header.getKey() + ": " + header.getValue() + "\n");
+						}
+						response.writeString("\tHost: " + response.getHeaders().getHost("Unknown"));
+						break;
 					case "/time":
 						response.setStatus(OK);
 						DataHolder current = new DataHolder("CurrentTime",
@@ -42,20 +53,36 @@ public class JSON {
 		});
 
 		server.start();
+		int port = server.getServerPort();
+		System.out.println("Server started on port " + port);
 
-		retrieve("/err").subscribe(
-				holder -> System.out.println("Server time: " + holder.value),
+		URI uri = new URI("http", null, "localhost", port, null, null, null);
+
+		retrieve(uri.resolve("/err")).subscribe(
+				data -> System.out.println("Server time: " + data),
 				e -> System.out.println("Client (/err) => " + e.getMessage()),
 				() -> System.out.println("Client (/err) => Done retrieving data"));
 
-		retrieve("/time").toBlocking().forEach(holder ->
-				System.out.println("Client (/time) => Server time: " + holder.value));
+		retrieve(uri.resolve("/headers")).subscribe(data -> System.out.println("Client (/headers) => " + data));
+
+		retrieve(uri.resolve("/time")).
+				flatMap(str -> Observable.<DataHolder>create(subscriber -> {
+					try {
+						subscriber.onNext(new ObjectMapper().readValue(str, DataHolder.class));
+						subscriber.onCompleted();
+					} catch (Exception e) {
+						subscriber.onError(e);
+					}
+				})).
+				toBlocking().
+				forEach(holder ->
+						System.out.println("Client (/time) => Server time: " + holder.value));
 
 		server.shutdown();
 	}
 
-	public static Observable<DataHolder> retrieve(String path) {
-		return RxNetty.createHttpGet("http://localhost:8282" + path).
+	public static Observable<String> retrieve(URI uri) {
+		return RxNetty.createHttpGet(uri.toString()).
 				flatMap(response -> {
 					if (response.getStatus().equals(OK)) {
 						return response.getContent();
@@ -68,15 +95,7 @@ public class JSON {
 								flatMap(Observable::error);
 					}
 				}).
-				map(buff -> buff.toString(Charset.defaultCharset())).
-				flatMap(str -> Observable.create(subscriber -> {
-					try {
-						subscriber.onNext(new ObjectMapper().readValue(str, DataHolder.class));
-						subscriber.onCompleted();
-					} catch (Exception e) {
-						subscriber.onError(e);
-					}
-				}));
+				map(buff -> buff.toString(Charset.defaultCharset()));
 	}
 
 	private static class DataHolder {

@@ -11,8 +11,9 @@ val supportLibs = Seq(
   "com.fasterxml.jackson.core" % "jackson-databind" % "2.5.2")
 
 val testLibs = Seq(
-  "org.scalatest" %% "scalatest" % "2.2.4",
-  "org.scalacheck" %% "scalachece k" % "1.12.2"
+  "junit"          %  "junit"     % "4.12",
+  "org.scalatest"  %% "scalatest" % "2.2.4",
+  "org.scalacheck" %% "scalacheck" % "1.12.2"
 ) map (_ % "test")
 
 libraryDependencies ++= reactiveLibs ++ supportLibs ++ testLibs

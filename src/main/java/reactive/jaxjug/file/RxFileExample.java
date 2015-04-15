@@ -5,7 +5,7 @@ import java.nio.file.Path;
 
 import rx.Observable;
 
-public class RxFile {
+public class RxFileExample {
 	private static String threadName() {
 		return Thread.currentThread().getName();
 	}

@@ -1,11 +1,11 @@
-package reactive.jaxjug;
+package reactive.jaxjug.creating;
 
 import rx.Observable;
 
 /**
  * Created by bcarlson on 4/12/15.
  */
-public class Error {
+public class ErrorHandlingExample {
     public static void main(String[] args) {
 
         Observable<Integer> errorStream = Observable.just(2, 1, 0, -1).

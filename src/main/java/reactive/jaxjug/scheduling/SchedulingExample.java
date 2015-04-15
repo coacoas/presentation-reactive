@@ -1,4 +1,4 @@
-package reactive.jaxjug;
+package reactive.jaxjug.scheduling;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -6,7 +6,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by bcarlson on 4/14/15.
  */
-public class Scheduling {
+public class SchedulingExample {
     public static void main(String[] args) throws InterruptedException {
         Observable.range(0, 10).
                 subscribeOn(Schedulers.computation()).

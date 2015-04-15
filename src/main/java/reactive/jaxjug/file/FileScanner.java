@@ -14,14 +14,14 @@ public class FileScanner {
 	}
 
 	public Observable<Path> tree() {
-		return Observable.<Path>create(s -> {
-			System.out.println("Scanning");
+		return Observable.<Path>create(observer -> {
+			System.out.println("Scanning " + path.toString());
 			try {
-				Files.walkFileTree(path, new FileVisitorSubscriber(path, s));
+				Files.walkFileTree(path, new FileVisitorSubscriber(path, observer));
 			} catch (IOException e) {
-				s.onError(e);
+				observer.onError(e);
 			} finally {
-				s.onCompleted();
+				observer.onCompleted();
 			}
 		});
 	}
