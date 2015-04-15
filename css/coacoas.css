@@ -2,6 +2,9 @@ html, body {
   height: 100%;
   width: 100%; }
 
+.reveal section span.highlight {
+  color: red;
+  font-style: bold; }
 .reveal section li.no-bullet {
   list-style-type: none; }
 .reveal section ul.no-bullet {

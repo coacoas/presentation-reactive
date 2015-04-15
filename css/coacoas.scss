@@ -5,6 +5,10 @@ html, body {
 
 .reveal {
   section {
+    span.highlight {
+      color: red;
+      font-style: bold;
+    }
     li.no-bullet {
       list-style-type: none;
     }
